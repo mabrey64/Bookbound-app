@@ -102,10 +102,10 @@ Search Parameters (Query Example)
 }
 
 The members of our group and their roles are:
-UI Specialist - Denis
-Business Logic and Persistence Specialist - Yishak
-Product Owner/Scrum Master/DevOps/GitHub Administrator - Devon
-Quality Assurance - Shawn
+UI Specialist - Denis Kalala
+Business Logic and Persistence Specialist - Yishak Teklemariam
+Product Owner/Scrum Master/DevOps/GitHub Administrator - Devon Mabrey
+Quality Assurance - Shawn Theaver
 
 The link to our github project is here: github.com/users/mabrey64/projects/1
 And the link to our first milestone is here: https://github.com/users/mabrey64/projects/1/views/1?pane=issue&itemId=115377811&issue=mabrey64%7CBookbound-app%7C1
