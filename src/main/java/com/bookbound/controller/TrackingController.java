@@ -1,15 +1,17 @@
 package com.bookbound.controller;
 
+import com.bookbound.dto.SeriesProgressResponse;
+import com.bookbound.model.Book;
 import com.bookbound.model.ReadingStatus;
 import com.bookbound.model.UserBookTracking;
 import com.bookbound.service.TrackingService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -18,6 +20,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Slf4j
 public class TrackingController {
     
     private final TrackingService trackingService;
@@ -43,6 +46,47 @@ public class TrackingController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+    
+    /**
+     * Get series progress for a user.
+     * GET /api/users/{userId}/series-progress?seriesName=Foundation
+     * @param userId the user ID
+     * @param seriesName the series name to check progress for
+     * @return series progress information with next book and recommendations
+     */
+    @GetMapping("/users/{userId}/series-progress")
+    public ResponseEntity<SeriesProgressResponse> getSeriesProgress(
+            @PathVariable String userId,
+            @RequestParam String seriesName) {
+        
+        log.info("Getting series progress for user {} and series {}", userId, seriesName);
+        
+        try {
+            SeriesProgressResponse progress = trackingService.getSeriesProgress(userId, seriesName);
+            return ResponseEntity.ok(progress);
+        } catch (IllegalArgumentException e) {
+            log.error("Error getting series progress: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    /**
+     * Get reading recommendations for a user.
+     * GET /api/users/{userId}/recommendations?limit=5
+     * @param userId the user ID
+     * @param limit maximum number of recommendations (default: 5)
+     * @return list of recommended books based on reading history
+     */
+    @GetMapping("/users/{userId}/recommendations")
+    public ResponseEntity<List<Book>> getReadingRecommendations(
+            @PathVariable String userId,
+            @RequestParam(defaultValue = "5") int limit) {
+        
+        log.info("Getting reading recommendations for user {} (limit: {})", userId, limit);
+        
+        List<Book> recommendations = trackingService.getReadingRecommendations(userId, limit);
+        return ResponseEntity.ok(recommendations);
     }
     
     /**
