@@ -3,9 +3,72 @@ For Final/Group Project in Enterprise Application Development class.
 
 ![Logo for the app (WIP)](Images/Logo.png)
 
-Our app, BookBound, allows current book readers to keep track of what physical books they’ve been reading; the title, author, genre, how many pages, and-if applicable-how many books are in the series. 
+Our app, BookBound, allows current book readers to keep track of what physical books they've been reading; the title, author, genre, how many pages, and-if applicable-how many books are in the series. 
 In addition, new book readers would be able to search for what books they want to start reading based on the same filters or search terms they identify. 
 Books would not be provided within the app, only where to get them (physically only).
+
+## 🚀 Backend Development Setup
+
+### Prerequisites
+- Java 17 or higher
+- Maven 3.6+
+- IDE (IntelliJ IDEA, Eclipse, or VS Code)
+
+### Dependencies
+- Spring Boot 3.5.3
+- Spring Data JPA
+- Spring Web
+- Lombok
+- H2 Database (development)
+- PostgreSQL (production ready)
+- Spring Boot DevTools
+
+### How to Run Locally
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd BookBound/Bookbound-app
+   ```
+
+2. **Run the application**
+   ```bash
+   # Using Maven
+   ./mvnw spring-boot:run
+   
+   # Or using your IDE - run BookboundAppApplication.java
+   ```
+
+3. **Access the application**
+   - Main app: http://localhost:8080
+   - H2 Database Console: http://localhost:8080/h2-console
+     - JDBC URL: `jdbc:h2:mem:bookbounddb`
+     - Username: `sa`
+     - Password: (leave empty)
+
+### Project Structure
+```
+src/main/java/com/bookbound/
+├── controller/     # REST API endpoints & web controllers
+├── service/        # Business logic layer
+├── repository/     # Data access layer (Spring Data JPA)
+├── model/          # JPA entities and domain objects
+├── dto/            # Data transfer objects for API requests/responses
+└── BookboundAppApplication.java  # Main Spring Boot application
+```
+
+### API Testing
+- Use Postman, curl, or any REST client
+- Base URL: http://localhost:8080/api
+- All endpoints will be documented as they're implemented
+
+### Database Configuration
+- **Development**: H2 in-memory database (auto-configured)
+- **Production**: Switch to PostgreSQL by uncommenting the config in `application.properties`
+
+---
+
+## 📱 Frontend UI Design
 
 We envision our app to look something like this:
 
