@@ -1,182 +1,406 @@
-# Bookbound-app
-For Final/Group Project in Enterprise Application Development class.
+# BookBound Backend API
 
-![Logo for the app (WIP)](Images/Logo.png)
+**BookBound** is a comprehensive book tracking application backend built with Java Spring Boot. It allows users to track their reading progress, discover new books, manage series progression, and organize their personal reading collections.
 
-Our app, BookBound, allows current book readers to keep track of what physical books they've been reading; the title, author, genre, how many pages, and-if applicable-how many books are in the series. 
-In addition, new book readers would be able to search for what books they want to start reading based on the same filters or search terms they identify. 
-Books would not be provided within the app, only where to get them (physically only).
+## 🚀 Features
 
-## 🚀 Backend Development Setup
+- **User Management**: Create and manage user accounts
+- **Book Catalog**: Comprehensive book database with series support
+- **Reading Progress Tracking**: Track current page, reading status, and completion dates
+- **Series Progression**: Smart recommendations for next books in series
+- **"To Read Next" Tagging**: Manual priority control for reading queue
+- **Google Books Integration**: Discover new books via external API
+- **Advanced Search & Filtering**: Find books by title, author, genre, page count, series
+- **Purchase Location Tracking**: Store links to where books can be purchased
 
-### Prerequisites
-- Java 17 or higher
-- Maven 3.6+
-- IDE (IntelliJ IDEA, Eclipse, or VS Code)
+## 📋 Prerequisites
 
-### Dependencies
-- Spring Boot 3.5.3
-- Spring Data JPA
-- Spring Web
-- Lombok
-- H2 Database (development)
-- PostgreSQL (production ready)
-- Spring Boot DevTools
+- **Java 17+**
+- **Maven 3.6+**
+- **IDE**: IntelliJ IDEA, Eclipse, or VS Code
 
-### How to Run Locally
+## 🛠️ Setup & Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd BookBound/Bookbound-app
-   ```
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd BookBound/Bookbound-app
+```
 
-2. **Run the application**
-   ```bash
-   # Using Maven
-   ./mvnw spring-boot:run
-   
-   # Or using your IDE - run BookboundAppApplication.java
-   ```
+### 2. Build the Project
+```bash
+./mvnw clean compile
+```
 
-3. **Access the application**
-   - Main app: http://localhost:8080
-   - H2 Database Console: http://localhost:8080/h2-console
-     - JDBC URL: `jdbc:h2:mem:bookbounddb`
-     - Username: `sa`
-     - Password: (leave empty)
+### 3. Run the Application
+```bash
+./mvnw spring-boot:run
+```
 
-### Project Structure
+The application will start on `http://localhost:8081`
+
+### 4. Access H2 Database Console (Development)
+- URL: `http://localhost:8081/h2-console`
+- JDBC URL: `jdbc:h2:mem:bookbound`
+- Username: `sa`
+- Password: (leave blank)
+
+## 📚 API Documentation
+
+### Base URL
+```
+http://localhost:8081/api
+```
+
+### 👤 User Management
+
+#### Create User
+```http
+POST /users
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com"
+}
+```
+
+#### Get User by ID
+```http
+GET /users/{userId}
+```
+
+#### Find User by Email
+```http
+GET /users?email=john@example.com
+```
+
+#### Search Users by Name
+```http
+GET /users/search?name=John
+```
+
+### 📖 Book Management
+
+#### Get All Books
+```http
+GET /books
+```
+
+#### Get Book by ID
+```http
+GET /books/{bookId}
+```
+
+#### Create New Book
+```http
+POST /books
+Content-Type: application/json
+
+{
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "genre": "Classic Literature",
+  "totalPages": 180,
+  "seriesName": null,
+  "seriesOrder": null
+}
+```
+
+#### Advanced Book Search
+```http
+POST /books/search
+Content-Type: application/json
+
+{
+  "title": "Foundation",
+  "author": "Asimov",
+  "genre": "Science Fiction",
+  "minPages": 200,
+  "maxPages": 500,
+  "seriesName": "Foundation"
+}
+```
+
+#### Search by Specific Criteria
+```http
+GET /books/search/title?q=Dune
+GET /books/search/author?q=Asimov
+GET /books/search/pages?min=200&max=400
+```
+
+#### Get Metadata
+```http
+GET /books/metadata/genres
+GET /books/metadata/authors
+GET /books/metadata/series
+```
+
+### 🌐 Google Books Integration
+
+#### Search External Books
+```http
+GET /books/google?query=science fiction
+```
+
+#### Advanced External Search
+```http
+GET /books/google/advanced?title=Dune&author=Herbert&subject=fiction
+```
+
+### 📊 Reading Progress Tracking
+
+#### Add Book to Reading List
+```http
+POST /users/{userId}/track
+Content-Type: application/json
+
+{
+  "bookId": "book-uuid",
+  "status": "READING",
+  "toReadNext": true
+}
+```
+
+#### Get User's Tracking List
+```http
+GET /users/{userId}/track
+GET /users/{userId}/track?status=READING
+```
+
+#### Get Books by Status
+```http
+GET /users/{userId}/to-read
+GET /users/{userId}/reading
+GET /users/{userId}/completed
+```
+
+#### Update Reading Progress
+```http
+PUT /track/{trackingId}
+Content-Type: application/json
+
+{
+  "currentPage": 150
+}
+```
+
+#### Update Reading Status
+```http
+PUT /track/{trackingId}
+Content-Type: application/json
+
+{
+  "status": "COMPLETED"
+}
+```
+
+#### Mark as Finished
+```http
+PUT /track/{trackingId}/finish
+```
+
+#### Start Reading
+```http
+PUT /track/{trackingId}/start
+```
+
+### 🏷️ "To Read Next" Feature
+
+#### Mark/Unmark as "To Read Next"
+```http
+PUT /track/{trackingId}/to-read-next
+Content-Type: application/json
+
+{
+  "toReadNext": true
+}
+```
+
+#### Get "To Read Next" Books
+```http
+GET /users/{userId}/to-read
+```
+
+### 📈 Series Progress & Recommendations
+
+#### Get Series Progress
+```http
+GET /users/{userId}/series-progress?seriesName=Foundation
+```
+
+**Response Example:**
+```json
+{
+  "seriesName": "Foundation",
+  "totalBooksInSeries": 3,
+  "booksRead": 1,
+  "booksInProgress": 0,
+  "nextBook": {
+    "id": "book-uuid",
+    "title": "Foundation and Empire",
+    "seriesOrder": 2
+  },
+  "genreSuggestions": [...],
+  "completionPercentage": 33.33,
+  "seriesStarted": true,
+  "seriesCompleted": false
+}
+```
+
+#### Get Reading Recommendations
+```http
+GET /users/{userId}/recommendations?limit=5
+```
+
+#### Get Reading Statistics
+```http
+GET /users/{userId}/stats
+```
+
+## 🗄️ Database Schema
+
+### Core Entities
+
+- **User**: User accounts and profiles
+- **Book**: Book catalog with series support
+- **UserBookTracking**: Reading progress tracking (junction table)
+- **Store**: Purchase location information
+
+### Key Relationships
+
+- User ↔ UserBookTracking (One-to-Many)
+- Book ↔ UserBookTracking (One-to-Many)
+- Book ↔ Store (One-to-Many)
+
+## 🧪 Sample Data
+
+The application automatically initializes with sample data including:
+- **3 Sample Users**: Alice, Bob, and Carol with different reading preferences
+- **30+ Books**: Across genres (Sci-Fi, Fantasy, Mystery, Romance, etc.)
+- **Series Collections**: Foundation, Lord of the Rings, Game of Thrones, etc.
+- **Sample Tracking Data**: Various reading statuses and progress examples
+
+## 🔧 Configuration
+
+### Application Properties
+```properties
+# Server Configuration
+server.port=8081
+
+# H2 Database (Development)
+spring.datasource.url=jdbc:h2:mem:bookbound
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+# JPA/Hibernate
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# H2 Console (Development)
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+```
+
+### Production Database Setup
+For production, update `application.properties`:
+```properties
+# PostgreSQL Example
+spring.datasource.url=jdbc:postgresql://localhost:5432/bookbound
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+spring.jpa.hibernate.ddl-auto=validate
+```
+
+## 🌐 Frontend Integration
+
+### Thymeleaf Templates
+The application includes Thymeleaf templates in `src/main/resources/templates/`:
+- `landing.html` - Landing page
+- `login.html` - User login
+- `signup.html` - User registration  
+- `home.html` - Dashboard
+
+### API Integration
+Frontend can integrate via:
+1. **REST API calls** (fetch/axios) for SPA functionality
+2. **Thymeleaf server-side rendering** for traditional web pages
+3. **Hybrid approach** combining both methods
+
+### CORS Configuration
+For frontend development, CORS is configured to allow cross-origin requests.
+
+## 🚀 Deployment
+
+### Local Development
+```bash
+./mvnw spring-boot:run
+```
+
+### Production Build
+```bash
+./mvnw clean package
+java -jar target/bookbound-app-1.0.0.jar
+```
+
+### Docker (Optional)
+```dockerfile
+FROM openjdk:17-jdk-slim
+COPY target/bookbound-app-1.0.0.jar app.jar
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+
+## 🧪 Testing
+
+### Manual Testing with Postman
+1. Import the API endpoints into Postman
+2. Create a user account
+3. Add books to tracking
+4. Test series progression
+5. Verify "To Read Next" functionality
+
+### Automated Testing
+```bash
+./mvnw test
+```
+
+## 📁 Project Structure
+
 ```
 src/main/java/com/bookbound/
-├── controller/     # REST API endpoints & web controllers
-├── service/        # Business logic layer
-├── repository/     # Data access layer (Spring Data JPA)
-├── model/          # JPA entities and domain objects
-├── dto/            # Data transfer objects for API requests/responses
-└── BookboundAppApplication.java  # Main Spring Boot application
+├── config/           # Configuration classes
+├── controller/       # REST API controllers
+├── dto/             # Data Transfer Objects
+├── model/           # JPA Entities
+├── repository/      # Data Access Layer
+├── service/         # Business Logic Layer
+└── BookboundAppApplication.java
 ```
 
-### API Testing
-- Use Postman, curl, or any REST client
-- Base URL: http://localhost:8080/api
-- All endpoints will be documented as they're implemented
+## 🤝 Contributing
 
-### Database Configuration
-- **Development**: H2 in-memory database (auto-configured)
-- **Production**: Switch to PostgreSQL by uncommenting the config in `application.properties`
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For issues or questions:
+1. Check the H2 console for database state
+2. Review application logs
+3. Verify API endpoints with Postman
+4. Check sample data initialization
 
 ---
 
-## 📱 Frontend UI Design
-
-We envision our app to look something like this:
-
-We start with the loading page: 
-
-![Home Page of the app](Images/Login.png)
-
-Then we have the Sign Up page for new users to set up their account (the Sign In page would look identical to this page minus the name or email)
-
-![Sign up page](Images/SignUp.png)
-
-Once signed in, we will send users to their user dashboard:
-
-![Dashboard of the app](Images/Home.png)
-
-We will have a search page with historical previously searched items:
-
-![Search page](Images/SearchResults.png)
-
-If the reader wants more details on a specific book
-we will give them a short description with the option to buy it off amazon or a site (Add to the library) 
-and once added the ability to read the book in the app: 
-
-![Selected book description](Images/Book.png)
-
-Most users love insights on their reading patterns and how frequently they are reading 
-and that is what the final page gives our readers the opportunity to do: 
-
-![Tracker of a user's stats](Images/Stats.png)
-
-Our planned functional requirements are as followed:
-
-As a long-time reader, 
-I want to record what physical books from the same series I’ve read so far
-So that I can get an idea of what books I need to get next.
-- Given that I’m currently signed into the application and it has books from the series The Witcher with 8 books in the series and only the first 4 books recorded into the series as finished.
-- When I’m about to add the next book, I need to select “Add book”, add how many pages were in the book, and that it is currently finished. 
-- Then the app will display the 5th book title, where a physical copy can be bought, show the series is 5 out of 8 books, and finally display any potential books or series to investigate reading if I cannot get the next book for The Witcher series. 
-As a new but interested reader,
-I want to search up what books fall under my specific genres
-So that I can select what books or series to buy and start to read.
-- Given that the app knows I’m a new reader and has a selection of books from all types of genres, authors, and series-including science fiction. The app will suggest top picks that fall under the genre being searched for (in the case of science fiction, these could be books like: Flatland, Starter Villain, Project Hail Mary).
-- When I want to search for the genre Science Fiction, I select “Browse by Genres”, enter Science Fiction for what genre to look for, press “Search”. 
-- Then the app will show me a variety of books that fall under the science fiction category including Leviathan Wakes, Dune, and I, Robot.
-As an avid book collector,
-I want to organize all my books and be able to filter quickly
-So that they can determine what books are marked as “to read next”.
-- Given I’ve got a plethora of books, and I need to specifically mark 1 book as “to read next.”
-- When I open the app, I select “My Collection”, filter by books not marked with anything, and check the books from the filtered selection.
-- Then I will find the books I haven’t marked yet and select one of them, some of them, or all of them, as “to read next.”
-
-Our UML Diagram for the application looks like this:
-
-![UML Diagram](Images/UMLDiagram.png)
-
-The JSON Schema for each of the classes:
-Book JSON Schema: 
-{
-  "id": "string",              // unique identifier (UUID or DB-generated)
-  "title": "string",
-  "author": "string",
-  "genre": "string",
-  "totalPages": "integer",
-  "seriesName": "string | null",   // optional: name of the series
-  "seriesOrder": "integer | null", // optional: which book in the series
-  "purchaseLocations": [
-    {
-      "storeName": "string",
-      "storeAddress": "string",
-      "storeUrl": "string | null"
-    }
-  ]
-}
-
-User’s Book Tracking JSON Schema
-			{
-  "id": "string",              // unique identifier for this record
-  "userId": "string",          // link to user
-  "bookId": "string",          // link to Book entity
-  "currentPage": "integer",    // where the user is
-  "status": "string",          // e.g., "reading", "completed",  "plan_to_read"
-  "startedAt": "string (date)",
-  "finishedAt": "string (date) | null"
-}
-
-Search Parameters (Query Example)
-{
-  "title": "string | null",
-  "author": "string | null",
-  "genre": "string | null",
-  "minPages": "integer | null",
-  "maxPages": "integer | null",
-  "seriesName": "string | null"
-}
-
-The members of our group and their roles are:
-UI Specialist - Denis Kalala
-Business Logic and Persistence Specialist - Yishak Teklemariam
-Product Owner/Scrum Master/DevOps/GitHub Administrator - Devon Mabrey
-Quality Assurance - Shawn Theaver
-
-The link to our github project is here: github.com/users/mabrey64/projects/1
-And the link to our first milestone is here: https://github.com/users/mabrey64/projects/1/views/1?pane=issue&itemId=115377811&issue=mabrey64%7CBookbound-app%7C1
-(Apologies if this isn't the exact qualifications for the project. I'm still learning how that works as I go.)
-
-Finally, this is an image of the planned schedule created every Sunday at 8 pm that is a recurring meeting until the Sunday before the final project is due:
-
-![image](https://github.com/user-attachments/assets/601920bd-4359-4f63-b125-d33d7643d0a8)
-
-https://teams.microsoft.com/l/meetup-join/19%3ameeting_MmU2YjE4ODYtMDRmMS00ZGQzLTg1YTItYmQxMDIzMGYxZjcw%40thread.v2/0?context=%7b%22Tid%22%3a%22f5222e6c-5fc6-48eb-8f03-73db18203b63%22%2c%22Oid%22%3a%2292e96ff6-a6b5-42f7-acff-adb29b77ccc2%22%7d
+**BookBound Backend** - Built with ❤️ using Java Spring Boot
 
