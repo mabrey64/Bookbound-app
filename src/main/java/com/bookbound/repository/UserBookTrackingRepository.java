@@ -25,6 +25,13 @@ public interface UserBookTrackingRepository extends JpaRepository<UserBookTracki
     List<UserBookTracking> findByUserId(@Param("userId") String userId);
     
     /**
+     * Find tracking entries marked as "to read next" for a user.
+     * @param userId the user ID
+     * @return list of tracking entries marked as to read next
+     */
+    List<UserBookTracking> findByUserIdAndToReadNextTrue(String userId);
+    
+    /**
      * Find all tracking entries for a specific book.
      * @param bookId the book ID
      * @return list of tracking entries for the book

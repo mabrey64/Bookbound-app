@@ -46,6 +46,7 @@ public class Book {
     private List<Store> purchaseLocations = new ArrayList<>();
     
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("book-tracking")
     private List<UserBookTracking> trackingEntries = new ArrayList<>();
     
     // Convenience method to add store

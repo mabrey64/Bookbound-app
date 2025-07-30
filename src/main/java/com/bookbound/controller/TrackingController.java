@@ -40,7 +40,8 @@ public class TrackingController {
             UserBookTracking tracking = trackingService.addBookToUserList(
                 userId, 
                 request.getBookId(), 
-                request.getStatus()
+                request.getStatus(),
+                request.isToReadNext()
             );
             return ResponseEntity.status(HttpStatus.CREATED).body(tracking);
         } catch (IllegalArgumentException e) {
@@ -119,8 +120,27 @@ public class TrackingController {
      */
     @GetMapping("/users/{userId}/to-read")
     public ResponseEntity<List<UserBookTracking>> getBooksToReadNext(@PathVariable String userId) {
-        List<UserBookTracking> books = trackingService.getBooksToReadNext(userId);
+        List<UserBookTracking> books = trackingService.getBooksMarkedToReadNext(userId);
         return ResponseEntity.ok(books);
+    }
+    
+    /**
+     * Mark or unmark a book as "to read next".
+     * PUT /api/track/{trackingId}/to-read-next
+     * @param trackingId the tracking entry ID
+     * @param request the request containing the toReadNext boolean value
+     * @return the updated tracking entry
+     */
+    @PutMapping("/track/{trackingId}/to-read-next")
+    public ResponseEntity<UserBookTracking> setToReadNext(
+            @PathVariable String trackingId,
+            @RequestBody ToReadNextRequest request) {
+        try {
+            UserBookTracking tracking = trackingService.setToReadNext(trackingId, request.isToReadNext());
+            return ResponseEntity.ok(tracking);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
     
     /**
@@ -252,12 +272,15 @@ public class TrackingController {
     public static class TrackingRequest {
         private String bookId;
         private ReadingStatus status;
+        private boolean toReadNext = false;
         
         // Getters and setters
         public String getBookId() { return bookId; }
         public void setBookId(String bookId) { this.bookId = bookId; }
         public ReadingStatus getStatus() { return status; }
         public void setStatus(ReadingStatus status) { this.status = status; }
+        public boolean isToReadNext() { return toReadNext; }
+        public void setToReadNext(boolean toReadNext) { this.toReadNext = toReadNext; }
     }
     
     public static class TrackingUpdateRequest {
@@ -269,5 +292,13 @@ public class TrackingController {
         public void setCurrentPage(Integer currentPage) { this.currentPage = currentPage; }
         public ReadingStatus getStatus() { return status; }
         public void setStatus(ReadingStatus status) { this.status = status; }
+    }
+
+    public static class ToReadNextRequest {
+        private boolean toReadNext;
+
+        // Getters and setters
+        public boolean isToReadNext() { return toReadNext; }
+        public void setToReadNext(boolean toReadNext) { this.toReadNext = toReadNext; }
     }
 } 

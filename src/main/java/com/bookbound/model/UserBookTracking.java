@@ -31,7 +31,8 @@ public class UserBookTracking {
     private User user;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(name = "book_id")
+    @JsonBackReference("book-tracking")
     private Book book;
     
     @Column(nullable = false)
@@ -46,6 +47,9 @@ public class UserBookTracking {
     
     @Column(name = "finished_at")
     private LocalDateTime finishedAt;
+    
+    @Column(name = "to_read_next")
+    private boolean toReadNext = false;
     
     // Convenience method to start reading
     public void startReading() {

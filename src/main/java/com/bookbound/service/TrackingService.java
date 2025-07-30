@@ -35,10 +35,11 @@ public class TrackingService {
      * @param userId the user ID
      * @param bookId the book ID
      * @param status the initial reading status
+     * @param toReadNext whether to mark as to read next
      * @return the created tracking entry
      * @throws IllegalArgumentException if user/book not found or already tracking
      */
-    public UserBookTracking addBookToUserList(String userId, String bookId, ReadingStatus status) {
+    public UserBookTracking addBookToUserList(String userId, String bookId, ReadingStatus status, boolean toReadNext) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
         
@@ -54,12 +55,25 @@ public class TrackingService {
         tracking.setBook(book);
         tracking.setStatus(status != null ? status : ReadingStatus.TO_READ);
         tracking.setCurrentPage(0);
+        tracking.setToReadNext(toReadNext);
         
         if (status == ReadingStatus.READING) {
             tracking.startReading();
         }
         
         return trackingRepository.save(tracking);
+    }
+    
+    /**
+     * Add a book to user's reading list (overloaded method for backward compatibility).
+     * @param userId the user ID
+     * @param bookId the book ID
+     * @param status the initial reading status
+     * @return the created tracking entry
+     * @throws IllegalArgumentException if user/book not found or already tracking
+     */
+    public UserBookTracking addBookToUserList(String userId, String bookId, ReadingStatus status) {
+        return addBookToUserList(userId, bookId, status, false);
     }
     
     /**
@@ -340,6 +354,30 @@ public class TrackingService {
      */
     public List<UserBookTracking> getCompletedBooks(String userId) {
         return trackingRepository.findByUserIdAndStatus(userId, ReadingStatus.COMPLETED);
+    }
+    
+    /**
+     * Mark or unmark a book as "to read next".
+     * @param trackingId the tracking entry ID
+     * @param toReadNext whether to mark as to read next
+     * @return the updated tracking entry
+     * @throws IllegalArgumentException if tracking entry not found
+     */
+    public UserBookTracking setToReadNext(String trackingId, boolean toReadNext) {
+        UserBookTracking tracking = trackingRepository.findById(trackingId)
+            .orElseThrow(() -> new IllegalArgumentException("Tracking entry not found with id: " + trackingId));
+        
+        tracking.setToReadNext(toReadNext);
+        return trackingRepository.save(tracking);
+    }
+    
+    /**
+     * Get books marked as "to read next" for a user.
+     * @param userId the user ID
+     * @return list of books marked as to read next
+     */
+    public List<UserBookTracking> getBooksMarkedToReadNext(String userId) {
+        return trackingRepository.findByUserIdAndToReadNextTrue(userId);
     }
     
     // Private helper methods
