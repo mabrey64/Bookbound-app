@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Browse Categories | BookBound</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#F7F1E3] min-h-screen flex">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-[#EDE9E5] p-6">
+    <div class="flex items-center mb-8 space-x-2">
+      <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path d="M4 19.5a9 9 0 0116 0M4 4l8 6 8-6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </svg>
+      <span class="text-2xl font-bold text-gray-800">BookBound</span>
+    </div>
+    <nav class="space-y-4">
+      <a th:href="@{/home}" class="block text-gray-800 hover:underline">Home</a>
+      <a th:href="@{/library}" class="block text-gray-800 hover:underline">My Books</a>
+      <a th:href="@{/categories}" class="block text-gray-800 font-semibold hover:underline">Categories</a>
+      <a th:href="@{/settings}" class="block text-gray-800 hover:underline">Settings</a>
+    </nav>
+  </aside>
+
+  <!-- Categories Content -->
+  <main class="flex-1 p-8">
+    <div class="flex items-center mb-8 space-x-4">
+      <a th:href="@{/home}" class="text-gray-800 hover:text-gray-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </a>
+      <h1 class="text-3xl font-bold text-gray-800">Browse Categories</h1>
+    </div>
+    <p class="text-gray-600 mb-6">Find books by genre or topic</p>
+
+    <!-- Filter Pills -->
+    <div class="flex flex-wrap gap-2 mb-6">
+      <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Fiction</span>
+      <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Non-fiction</span>
+      <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Mystery</span>
+      <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Romance</span>
+      <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Science Fiction</span>
+      <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Biography</span>
+      <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">History</span>
+      <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Art & Design</span>
+    </div>
+
+    <!-- Category Cards -->
+    <div class="grid grid-cols-3 gap-6">
+      <div class="bg-white p-6 rounded-lg flex flex-col items-center space-y-2">
+        <svg class="w-8 h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M4 19.5a9 9 0 0116 0M4 4l8 6 8-6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        </svg>
+        <h2 class="font-semibold text-gray-800">Fiction</h2>
+        <p class="text-gray-600 text-sm">234 books</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg flex flex-col items-center space-y-2">
+        <svg class="w-8 h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M12 4.354a4 4 0 010 7.292M12 19.046a4 4 0 010-7.292" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        </svg>
+        <h2 class="font-semibold text-gray-800">Mystery</h2>
+        <p class="text-gray-600 text-sm">105 books</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg flex flex-col items-center space-y-2">
+        <svg class="w-8 h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3 6-3 6-3-6 3-6z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        </svg>
+        <h2 class="font-semibold text-gray-800">Science Fiction</h2>
+        <p class="text-gray-600 text-sm">65 books</p>
+      </div>
+      <!-- Add more cards similarly -->
+    </div>
+  </main>
+</body>
+</html>

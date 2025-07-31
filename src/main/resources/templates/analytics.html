@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Reading Tracker | BookBound</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#F7F1E3] min-h-screen p-12">
+  <div class="max-w-4xl mx-auto grid grid-cols-2 gap-8">
+    <!-- Books Read -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-medium text-gray-600 mb-2">Books Read</h3>
+      <p class="text-4xl font-bold text-gray-800">12</p>
+    </div>
+    <!-- Reading Goal -->
+    <div class="bg-white p-6 rounded-lg shadow flex flex-col items-center justify-center">
+      <h3 class="text-lg font-medium text-gray-600 mb-2">Reading Goal</h3>
+      <div class="w-24 h-24 relative">
+        <svg class="transform -rotate-90" width="96" height="96" viewBox="0 0 36 36">
+          <path class="text-gray-200" stroke-width="3" stroke="currentColor" fill="none"
+                d="M18 2.0845
+                   a 15.9155 15.9155 0 0 1 0 31.831
+                   a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="text-blue-600" stroke-width="3" stroke-dasharray="90,100" stroke-linecap="round"
+                stroke="currentColor" fill="none"
+                d="M18 2.0845
+                   a 15.9155 15.9155 0 0 1 0 31.831
+                   a 15.9155 15.9155 0 0 1 0 -31.831"/>
+        </svg>
+        <span class="absolute inset-0 flex items-center justify-center text-xl font-bold text-gray-800">90%</span>
+      </div>
+    </div>
+    <!-- Reading Activity Chart Placeholder -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-medium text-gray-600 mb-4">Reading Activity</h3>
+      <div class="h-48 bg-gray-200 rounded animate-pulse"></div>
+    </div>
+    <!-- Books by Genre -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-medium text-gray-600 mb-4">Books by Genre</h3>
+      <div class="space-y-2">
+        <div class="w-full bg-gray-200 rounded-full h-6 animate-pulse"></div>
+        <div class="w-3/4 bg-gray-200 rounded-full h-6 animate-pulse"></div>
+        <div class="w-1/2 bg-gray-200 rounded-full h-6 animate-pulse"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

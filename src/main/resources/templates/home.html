@@ -15,10 +15,10 @@
       <span class="text-2xl font-bold text-gray-800">BookBound</span>
     </div>
     <nav class="space-y-4">
-      <a th:href="@{/home}"      class="block text-gray-800 font-semibold hover:underline">Home</a>
-      <a th:href="@{/library}"   class="block text-gray-800 hover:underline">My Books</a>
-      <a th:href="@{/categories}"class="block text-gray-800 hover:underline">Categories</a>
-      <a th:href="@{/settings}"  class="block text-gray-800 hover:underline">Settings</a>
+      <a th:href="@{/home}" class="block text-gray-800 font-semibold hover:underline">Home</a>
+      <a th:href="@{/library}" class="block text-gray-800 hover:underline">My Books</a>
+      <a th:href="@{/categories}" class="block text-gray-800 hover:underline">Categories</a>
+      <a th:href="@{/settings}" class="block text-gray-800 hover:underline">Settings</a>
     </nav>
   </aside>
 
@@ -32,7 +32,7 @@
         <h2 class="text-xl font-semibold text-gray-800">My Library</h2>
         <a th:href="@{/library}" class="text-gray-700 hover:underline">View all</a>
       </div>
-      <div class="grid grid-cols-4 gap-4">
+      <div class="grid grid-cols-4 gap-4 mb-12">
         <div class="bg-white rounded-lg h-32"></div>
         <div class="bg-white rounded-lg h-32"></div>
         <div class="bg-white rounded-lg h-32"></div>
@@ -41,13 +41,20 @@
     </section>
 
     <!-- Browse Categories -->
-    <section>
+    <section class="mb-6">
       <h2 class="text-xl font-semibold text-gray-800 mb-4">Browse Categories</h2>
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2 mb-6">
         <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Fiction</span>
         <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Non-fiction</span>
         <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Fantasy</span>
         <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Mystery</span>
+      </div>
+      <!-- Animated placeholders -->
+      <div class="grid grid-cols-4 gap-4 animate-pulse">
+        <div class="bg-white rounded-lg h-32"></div>
+        <div class="bg-white rounded-lg h-32"></div>
+        <div class="bg-white rounded-lg h-32"></div>
+        <div class="bg-white rounded-lg h-32"></div>
       </div>
     </section>
   </main>

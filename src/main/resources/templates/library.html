@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>My Library | BookBound</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#F7F1E3] min-h-screen flex">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-[#EDE9E5] p-6">
+    <div class="flex items-center mb-8 space-x-2">
+      <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path d="M4 19.5a9 9 0 0116 0M4 4l8 6 8-6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </svg>
+      <span class="text-2xl font-bold text-gray-800">BookBound</span>
+    </div>
+    <nav class="space-y-4">
+      <a th:href="@{/home}" class="block text-gray-800 hover:underline">Home</a>
+      <a th:href="@{/library}" class="block text-gray-800 font-semibold hover:underline">My Books</a>
+      <a th:href="@{/categories}" class="block text-gray-800 hover:underline">Categories</a>
+      <a th:href="@{/settings}" class="block text-gray-800 hover:underline">Settings</a>
+    </nav>
+  </aside>
+
+  <!-- Main area -->
+  <div class="flex-1 flex flex-col">
+    <!-- Header with back arrow + search -->
+    <header class="flex items-center p-6 space-x-4">
+      <a th:href="@{/home}" class="text-gray-800 hover:text-gray-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
+      <form th:action="@{/search}" method="get" class="flex-1">
+        <input
+          name="q"
+          type="text"
+          placeholder="Search"
+          class="w-full px-4 py-2 border-2 border-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-800"
+        />
+      </form>
+    </header>
+
+    <!-- Library & Categories -->
+    <main class="flex-1 p-8">
+      <!-- My Library -->
+      <h1 class="text-3xl font-bold text-gray-800 mb-6">My Library</h1>
+      <div class="grid grid-cols-4 gap-6 mb-12">
+        <div class="bg-white rounded-lg h-40"></div>
+        <div class="bg-white rounded-lg h-40"></div>
+        <div class="bg-white rounded-lg h-40"></div>
+        <div class="bg-white rounded-lg h-40"></div>
+      </div>
+
+      <!-- Browse Categories -->
+      <section class="mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Browse Categories</h2>
+        <div class="flex flex-wrap gap-2">
+          <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Fiction</span>
+          <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Non-fiction</span>
+          <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Fantasy</span>
+          <span class="px-3 py-1 bg-[#EDE9E5] text-gray-800 rounded-full">Mystery</span>
+        </div>
+      </section>
+
+      <!-- Placeholders under categories -->
+      <div class="grid grid-cols-4 gap-6 animate-pulse">
+        <div class="bg-white rounded-lg h-32"></div>
+        <div class="bg-white rounded-lg h-32"></div>
+        <div class="bg-white rounded-lg h-32"></div>
+        <div class="bg-white rounded-lg h-32"></div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
