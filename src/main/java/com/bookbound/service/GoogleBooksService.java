@@ -5,11 +5,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Service for integrating with Google Books API.
@@ -21,6 +26,9 @@ public class GoogleBooksService {
     
     private static final String GOOGLE_BOOKS_API_URL = "https://www.googleapis.com/books/v1/volumes";
     private static final int MAX_RESULTS = 20;
+    
+    @Value("${google.books.api.key}")
+    private String apiKey;
     
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -85,10 +93,11 @@ public class GoogleBooksService {
      * @return formatted URL
      */
     private String buildSearchUrl(String query) {
-        return String.format("%s?q=%s&maxResults=%d&printType=books",
+        return String.format("%s?q=%s&maxResults=%d&printType=books&key=%s",
                 GOOGLE_BOOKS_API_URL,
                 query.replace(" ", "+"),
-                MAX_RESULTS);
+                MAX_RESULTS,
+                apiKey);
     }
     
     /**
@@ -199,5 +208,41 @@ public class GoogleBooksService {
             log.error("Error parsing individual book item: {}", e.getMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Get book cover image URL from Google Books API.
+     * @param title the book title
+     * @param author the book author
+     * @return the cover image URL, or null if not found
+     */
+    public String getBookCoverUrl(String title, String author) {
+        try {
+            String query = title + " " + author;
+            String url = buildSearchUrl(query);
+            
+            String response = restTemplate.getForObject(url, String.class);
+            
+            if (response != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode root = mapper.readTree(response);
+                
+                if (root.has("items") && root.get("items").isArray() && root.get("items").size() > 0) {
+                    JsonNode firstBook = root.get("items").get(0);
+                    if (firstBook.has("volumeInfo") && 
+                        firstBook.get("volumeInfo").has("imageLinks") &&
+                        firstBook.get("volumeInfo").get("imageLinks").has("thumbnail")) {
+                        
+                        String thumbnailUrl = firstBook.get("volumeInfo").get("imageLinks").get("thumbnail").asText();
+                        // Convert thumbnail to larger image
+                        return thumbnailUrl.replace("zoom=1", "zoom=3");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Failed to fetch book cover for {} by {}: {}", title, author, e.getMessage());
+        }
+        
+        return null;
     }
 } 

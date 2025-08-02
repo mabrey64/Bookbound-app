@@ -31,6 +31,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
     
+    @Column(nullable = false)
+    private String password;
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<UserBookTracking> readingList = new ArrayList<>();

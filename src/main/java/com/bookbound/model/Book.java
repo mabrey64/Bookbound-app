@@ -37,9 +37,14 @@ public class Book {
     private Integer totalPages;
     
     // Series information - nullable for standalone books
+    @Column
     private String seriesName;
     
+    @Column
     private Integer seriesOrder;
+    
+    @Column
+    private String imageUrl;
     
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference

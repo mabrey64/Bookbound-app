@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Settings | BookBound</title>
+  <title th:text="'BookBound | ' + ${tpl == 'landing' ? 'Welcome' : tpl == 'home' ? 'Home' : tpl == 'library' ? 'Library' : tpl == 'search' ? 'Search' : 'Page'}">BookBound</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .theme-transition { transition: background-color 0.3s, color 0.3s; }

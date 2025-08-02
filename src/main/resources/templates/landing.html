@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title th:text="'BookBound | ' + '${tpl=='landing'?'Welcome':tpl=='home'?'Home':tpl=='library'?'Library':tpl=='search'?'Search':'Page'}'">BookBound</title>
+  <title th:text="'BookBound | ' + ${tpl == 'landing' ? 'Welcome' : tpl == 'home' ? 'Home' : tpl == 'library' ? 'Library' : tpl == 'search' ? 'Search' : 'Page'}">BookBound</title>
   <!-- enable class-based dark mode -->
   <script>tailwind.config = { darkMode: 'class' }</script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -39,8 +39,44 @@
 
   <!-- Main content -->
   <main class="flex-1 p-8">
-    <!-- Paste your page-specific markup here -->
-    <div>CONTENT FOR $tpl</div>
+    <!-- Welcome Section -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-4">Welcome to BookBound</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">Your personal book tracking companion</p>
+      <div class="space-x-4">
+        <a th:href="@{/login}" class="inline-block px-6 py-3 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
+          Sign In
+        </a>
+        <a th:href="@{/signup}" class="inline-block px-6 py-3 border-2 border-gray-800 text-gray-800 rounded-full hover:bg-gray-100 transition">
+          Sign Up
+        </a>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center">
+        <div class="w-16 h-16 bg-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <span class="text-white text-2xl">📚</span>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Track Your Books</h3>
+        <p class="text-gray-600">Keep track of what you've read, what you're reading, and what you want to read next.</p>
+      </div>
+      <div class="text-center">
+        <div class="w-16 h-16 bg-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <span class="text-white text-2xl">🔍</span>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Discover New Books</h3>
+        <p class="text-gray-600">Search through our extensive collection and find your next favorite book.</p>
+      </div>
+      <div class="text-center">
+        <div class="w-16 h-16 bg-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <span class="text-white text-2xl">📊</span>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Track Progress</h3>
+        <p class="text-gray-600">Monitor your reading progress and set goals to stay motivated.</p>
+      </div>
+    </div>
   </main>
 </body>
 </html>

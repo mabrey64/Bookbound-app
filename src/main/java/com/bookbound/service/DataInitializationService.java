@@ -7,23 +7,24 @@ import com.bookbound.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 /**
- * Service to initialize sample data for development and testing.
+ * Service to initialize sample data when the application starts.
  */
-@Service
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class DataInitializationService implements CommandLineRunner {
     
     private final BookRepository bookRepository;
-    private final StoreRepository storeRepository;
     private final UserRepository userRepository;
-    private final TrackingService trackingService;
+    private final StoreRepository storeRepository;
+    private final GoogleBooksService googleBooksService;
     
     @Override
     public void run(String... args) throws Exception {
@@ -37,19 +38,22 @@ public class DataInitializationService implements CommandLineRunner {
     }
     
     private void initializeSampleData() {
-        // Create sample users
-        User user1 = createUser("Alice Johnson", "alice@bookbound.com");
-        User user2 = createUser("Bob Smith", "bob@bookbound.com");
-        User user3 = createUser("Carol Davis", "carol@bookbound.com");
-        
-        // Create sample books with comprehensive data
-        initializeSampleBooks();
-        
-        // Create sample tracking relationships
-        createSampleTrackingData(user1, user2, user3);
-        
-        log.info("Created {} books and {} users with sample tracking data", 
-                bookRepository.count(), userRepository.count());
+        try {
+            log.info("Initializing sample data...");
+            
+            // Create sample books
+            initializeSampleBooks();
+            
+            // Create sample users
+            User user1 = createUser("Alice Johnson", "alice@example.com");
+            User user2 = createUser("Bob Smith", "bob@example.com");
+            User user3 = createUser("Carol Davis", "carol@example.com");
+            
+            log.info("Sample data initialization completed successfully!");
+            
+        } catch (Exception e) {
+            log.error("Error initializing sample data: {}", e.getMessage(), e);
+        }
     }
     
     private void initializeSampleBooks() {
@@ -123,59 +127,8 @@ public class DataInitializationService implements CommandLineRunner {
         User user = new User();
         user.setName(name);
         user.setEmail(email);
+        user.setPassword("password123"); // Simple password for demo purposes
         return userRepository.save(user);
-    }
-    
-    private void createSampleTrackingData(User user1, User user2, User user3) {
-        try {
-            // User 1: Reading Foundation series
-            List<Book> foundationBooks = bookRepository.findBySeriesNameOrderBySeriesOrder("Foundation");
-            if (!foundationBooks.isEmpty()) {
-                // Completed Foundation (book 1)
-                UserBookTracking tracking1 = trackingService.addBookToUserList(
-                    user1.getId(), foundationBooks.get(0).getId(), ReadingStatus.COMPLETED, false);
-                tracking1.setStartedAt(LocalDateTime.now().minusDays(30));
-                tracking1.setFinishedAt(LocalDateTime.now().minusDays(15));
-                tracking1.setCurrentPage(foundationBooks.get(0).getTotalPages());
-                
-                // Currently reading Foundation and Empire (book 2)
-                if (foundationBooks.size() > 1) {
-                    trackingService.addBookToUserList(
-                        user1.getId(), foundationBooks.get(1).getId(), ReadingStatus.READING, true);
-                }
-            }
-            
-            // User 2: Reading LOTR series
-            List<Book> lotrBooks = bookRepository.findBySeriesNameOrderBySeriesOrder("The Lord of the Rings");
-            if (!lotrBooks.isEmpty()) {
-                // Wants to read Fellowship
-                trackingService.addBookToUserList(
-                    user2.getId(), lotrBooks.get(0).getId(), ReadingStatus.TO_READ, true);
-                
-                // Reading The Hobbit
-                List<Book> hobbitBooks = bookRepository.findByTitleContainingIgnoreCase("Hobbit");
-                if (!hobbitBooks.isEmpty()) {
-                    trackingService.addBookToUserList(
-                        user2.getId(), hobbitBooks.get(0).getId(), ReadingStatus.READING, false);
-                }
-            }
-            
-            // User 3: Various books
-            List<Book> duneBooks = bookRepository.findByTitleContainingIgnoreCase("Dune");
-            if (!duneBooks.isEmpty()) {
-                trackingService.addBookToUserList(
-                    user3.getId(), duneBooks.get(0).getId(), ReadingStatus.COMPLETED, false);
-            }
-            
-            List<Book> mysteryBooks = bookRepository.findByGenre("Mystery");
-            if (!mysteryBooks.isEmpty()) {
-                trackingService.addBookToUserList(
-                    user3.getId(), mysteryBooks.get(0).getId(), ReadingStatus.TO_READ, true);
-            }
-            
-        } catch (Exception e) {
-            log.warn("Error creating sample tracking data: {}", e.getMessage());
-        }
     }
     
     private Book createBook(String title, String author, String genre, Integer totalPages, 
@@ -187,6 +140,29 @@ public class DataInitializationService implements CommandLineRunner {
         book.setTotalPages(totalPages);
         book.setSeriesName(seriesName);
         book.setSeriesOrder(seriesOrder);
+        
+        // Try to fetch real cover image from Google Books API
+        try {
+            log.info("Attempting to fetch cover image for '{}' by {}", title, author);
+            String coverUrl = googleBooksService.getBookCoverUrl(title, author);
+            
+            if (coverUrl != null && !coverUrl.trim().isEmpty()) {
+                book.setImageUrl(coverUrl);
+                log.info("✅ Found cover image for '{}' by {}: {}", title, author, coverUrl);
+            } else {
+                // Fallback to placeholder image
+                String placeholderUrl = "https://via.placeholder.com/300x400/cccccc/666666?text=" + title.replace(" ", "+");
+                book.setImageUrl(placeholderUrl);
+                log.info("❌ No cover image found for '{}' by {}, using placeholder: {}", title, author, placeholderUrl);
+            }
+        } catch (Exception e) {
+            // Fallback to placeholder image if API call fails
+            String placeholderUrl = "https://via.placeholder.com/300x400/cccccc/666666?text=" + title.replace(" ", "+");
+            book.setImageUrl(placeholderUrl);
+            log.warn("⚠️ Failed to fetch cover image for '{}' by {}: {}. Using placeholder: {}", 
+                    title, author, e.getMessage(), placeholderUrl);
+        }
+        
         return book;
     }
     
